@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>硬件面试题库导航</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="题库筛选">
+        <div class="brand">
+          <span class="brand-mark">HW</span>
+          <div>
+            <strong>硬件面试题库</strong>
+            <small>GitHub 题源整理版</small>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label for="searchInput">搜索题目</label>
+          <div class="search-box">
+            <span aria-hidden="true">⌕</span>
+            <input id="searchInput" type="search" placeholder="输入 FPGA、MOSFET、SPI..." />
+          </div>
+        </div>
+
+        <div class="control-group">
+          <span class="label">公司类型</span>
+          <div class="segmented" role="group" aria-label="公司类型">
+            <button class="is-active" data-filter="company" data-value="all">全部</button>
+            <button data-filter="company" data-value="big">大厂</button>
+            <button data-filter="company" data-value="small">小厂</button>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <span class="label">技术方向</span>
+          <div class="chip-list" id="domainFilters"></div>
+        </div>
+
+        <div class="control-group">
+          <span class="label">难度</span>
+          <div class="chip-list compact" id="levelFilters"></div>
+        </div>
+
+        <div class="source-card">
+          <span>题源</span>
+          <a href="https://github.com/mikinty/Hardware-Engineer-Interview-Questions" target="_blank" rel="noreferrer">Hardware-Engineer-Interview-Questions</a>
+          <a href="https://github.com/pengwubj/hw_interview_questions" target="_blank" rel="noreferrer">hw_interview_questions</a>
+          <a href="https://github.com/GaetanoLongo/PowerElectronics" target="_blank" rel="noreferrer">PowerElectronics</a>
+          <a href="https://github.com/IAS-Uni-Siegen/PE_course" target="_blank" rel="noreferrer">PE_course</a>
+          <a href="https://github.com/tabler/tabler" target="_blank" rel="noreferrer">界面参考 Tabler</a>
+        </div>
+      </aside>
+
+      <main class="main">
+        <section class="hero">
+          <img src="./assets/hardware-banner.png" alt="电路板与硬件实验室背景" />
+          <div class="hero-overlay">
+            <p>Hardware Interview Kit</p>
+            <h1>按大厂与小厂侧重点整理的硬件面试题库</h1>
+            <div class="hero-actions">
+              <button id="focusBig" type="button">大厂高频</button>
+              <button id="focusSmall" type="button">小厂实战</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="stats" aria-label="题库统计">
+          <article>
+            <span id="totalCount">0</span>
+            <p>当前题目</p>
+          </article>
+          <article>
+            <span id="bigCount">0</span>
+            <p>偏大厂题</p>
+          </article>
+          <article>
+            <span id="smallCount">0</span>
+            <p>偏小厂题</p>
+          </article>
+          <article>
+            <span id="domainCount">0</span>
+            <p>技术方向</p>
+          </article>
+        </section>
+
+        <section class="toolbar" aria-label="排序工具">
+          <div>
+            <strong id="resultTitle">全部题目</strong>
+            <span id="resultHint">覆盖模拟、数字、FPGA、嵌入式与系统设计</span>
+          </div>
+          <select id="sortSelect" aria-label="排序方式">
+            <option value="default">默认排序</option>
+            <option value="level">按难度排序</option>
+            <option value="domain">按方向排序</option>
+          </select>
+        </section>
+
+        <section id="questionGrid" class="question-grid" aria-live="polite"></section>
+      </main>
+    </div>
+
+    <template id="questionTemplate">
+      <article class="question-card">
+        <div class="card-top">
+          <span class="domain"></span>
+          <span class="level"></span>
+        </div>
+        <h2></h2>
+        <p class="answer"></p>
+        <div class="tags"></div>
+      </article>
+    </template>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
