@@ -1,0 +1,1320 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Datasheet 专业翻译工作台</title>
+  <style>
+    :root {
+      --bg: #f5f7fa;
+      --panel: #ffffff;
+      --ink: #16202a;
+      --muted: #617184;
+      --line: #d9e0e8;
+      --accent: #0b6bcb;
+      --accent-2: #15845a;
+      --danger: #b42318;
+      --chip: #eef4fb;
+      --shadow: 0 12px 34px rgba(31, 47, 70, 0.11);
+      font-family: "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--bg);
+    }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+    }
+
+    header {
+      padding: 18px 22px 12px;
+      border-bottom: 1px solid var(--line);
+      background: var(--panel);
+    }
+
+    h1 {
+      margin: 0 0 6px;
+      font-size: 22px;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: minmax(260px, 1fr) minmax(300px, 1.2fr);
+      gap: 12px;
+      padding: 14px 22px;
+      background: #edf2f7;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .toolgroup {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    label {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    input,
+    select,
+    button,
+    textarea {
+      font: inherit;
+    }
+
+    input,
+    select,
+    textarea {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      border-radius: 6px;
+      outline: none;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(11, 107, 203, 0.12);
+    }
+
+    input[type="password"],
+    input[type="text"],
+    select {
+      height: 34px;
+      padding: 0 10px;
+    }
+
+    .api-url {
+      width: min(100%, 340px);
+    }
+
+    .api-key {
+      width: min(100%, 220px);
+    }
+
+    .model {
+      width: 140px;
+    }
+
+    button {
+      height: 34px;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fff;
+      color: var(--ink);
+      cursor: pointer;
+    }
+
+    button.primary {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #fff;
+    }
+
+    button.success {
+      border-color: var(--accent-2);
+      background: var(--accent-2);
+      color: #fff;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.58;
+    }
+
+    .status {
+      padding: 9px 22px;
+      color: var(--muted);
+      font-size: 13px;
+      min-height: 36px;
+      background: #fff;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .status.error {
+      color: var(--danger);
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 14px;
+      padding: 14px;
+      min-height: 0;
+    }
+
+    .pane {
+      min-height: 0;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .pane-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      font-weight: 650;
+      font-size: 14px;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 6px;
+      color: var(--muted);
+      font-weight: 400;
+      font-size: 12px;
+    }
+
+    .chip {
+      padding: 3px 7px;
+      border-radius: 999px;
+      background: var(--chip);
+      white-space: nowrap;
+    }
+
+    textarea {
+      width: 100%;
+      height: 100%;
+      resize: none;
+      border: 0;
+      border-radius: 0;
+      padding: 14px;
+      line-height: 1.55;
+      font-family: Consolas, "Cascadia Mono", "Microsoft YaHei", monospace;
+      font-size: 14px;
+    }
+
+    textarea:focus {
+      box-shadow: none;
+    }
+
+    .source-body {
+      position: relative;
+      min-height: 0;
+      display: grid;
+    }
+
+    .source-switch {
+      display: none;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .source-switch.visible {
+      display: flex;
+    }
+
+    .source-switch button {
+      height: 28px;
+      padding: 0 9px;
+      font-size: 12px;
+    }
+
+    .source-switch button.active {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .pdf-viewer {
+      display: none;
+      width: 100%;
+      height: 100%;
+      min-height: 520px;
+      border: 0;
+      background: #2f353d;
+    }
+
+    .pdf-viewer.active {
+      display: block;
+    }
+
+    textarea.hidden-source {
+      display: none;
+    }
+
+    .output {
+      padding: 14px;
+      overflow: auto;
+      line-height: 1.64;
+      font-size: 14px;
+    }
+
+    .segment {
+      border-bottom: 1px solid #edf1f5;
+      padding: 0 0 12px;
+      margin: 0 0 12px;
+      white-space: pre-wrap;
+    }
+
+    .segment:last-child {
+      border-bottom: 0;
+      margin-bottom: 0;
+    }
+
+    .term {
+      display: inline-block;
+      color: #084c61;
+      background: #e7f7fb;
+      border: 1px solid #bee6ef;
+      border-radius: 5px;
+      padding: 0 4px;
+      margin: 0 1px;
+    }
+
+    .guide {
+      display: grid;
+      gap: 12px;
+    }
+
+    .guide-card {
+      border: 1px solid var(--line);
+      border-left-width: 7px;
+      border-radius: 8px;
+      padding: 12px;
+      background: #fff;
+    }
+
+    .guide-card.red {
+      border-left-color: #d92d20;
+      background: #fff4f2;
+    }
+
+    .guide-card.yellow {
+      border-left-color: #d9a400;
+      background: #fff9e6;
+    }
+
+    .guide-card.green {
+      border-left-color: #16845b;
+      background: #effaf5;
+    }
+
+    .guide-head {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .badge {
+      display: inline-grid;
+      place-items: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      color: #fff;
+      font-weight: 800;
+      flex: 0 0 auto;
+    }
+
+    .red .badge {
+      background: #d92d20;
+    }
+
+    .yellow .badge {
+      background: #c58b00;
+    }
+
+    .green .badge {
+      background: #16845b;
+    }
+
+    .guide-list {
+      margin: 8px 0 0 20px;
+      padding: 0;
+    }
+
+    .guide-list li {
+      margin: 6px 0;
+    }
+
+    .snippet {
+      margin-top: 9px;
+      padding: 8px 10px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(30, 45, 60, 0.12);
+      color: #293848;
+      white-space: pre-wrap;
+      font-family: Consolas, "Cascadia Mono", "Microsoft YaHei", monospace;
+      font-size: 12px;
+    }
+
+    .pdf-annotated {
+      display: grid;
+      gap: 14px;
+      justify-items: center;
+      padding-bottom: 10px;
+    }
+
+    .legend {
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: center;
+      padding: 8px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #f8fafc;
+      font-size: 13px;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .pdf-page {
+      position: relative;
+      width: fit-content;
+      max-width: 100%;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 8px 20px rgba(20, 35, 55, 0.14);
+      overflow: hidden;
+    }
+
+    .pdf-page canvas {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    .pdf-marker {
+      position: absolute;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      min-width: 24px;
+      min-height: 24px;
+      max-width: 220px;
+      padding: 3px 7px 3px 3px;
+      border-radius: 999px;
+      color: #fff;
+      font-weight: 800;
+      font-size: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.32);
+      transform: translate(-10px, -50%);
+      cursor: help;
+      z-index: 2;
+    }
+
+    .marker-num {
+      display: inline-grid;
+      place-items: center;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.22);
+      flex: 0 0 auto;
+    }
+
+    .marker-text {
+      max-width: 170px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-weight: 700;
+    }
+
+    .pdf-marker.red {
+      background: #d92d20;
+    }
+
+    .pdf-marker.yellow {
+      background: #c58b00;
+    }
+
+    .pdf-marker.green {
+      background: #16845b;
+    }
+
+    .marker-note {
+      width: 100%;
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .annotation-list {
+      width: min(100%, 920px);
+      display: grid;
+      gap: 8px;
+    }
+
+    .annotation-item {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px 10px;
+      background: #fff;
+      font-size: 13px;
+    }
+
+    .annotation-item strong {
+      margin-right: 6px;
+    }
+
+    .hint {
+      color: var(--muted);
+    }
+
+    .file-input {
+      max-width: 230px;
+      font-size: 12px;
+    }
+
+    @media (max-width: 920px) {
+      .toolbar {
+        grid-template-columns: 1fr;
+      }
+
+      main {
+        grid-template-columns: 1fr;
+        grid-template-rows: minmax(360px, 1fr) minmax(360px, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>Datasheet 专业翻译工作台</h1>
+      <p class="subtitle">左侧放英文原文，右侧输出中文译文；面向芯片、电源、射频、接口、寄存器、时序和封装等英文数据手册。</p>
+    </header>
+
+    <section class="toolbar" aria-label="工具栏">
+      <div class="toolgroup">
+        <input class="file-input" id="fileInput" type="file" accept=".pdf,.txt,.md,.csv,.html,.htm,.log" />
+        <button id="sampleBtn" type="button">示例</button>
+        <button id="clearBtn" type="button">清空</button>
+        <button id="copyBtn" type="button">复制译文</button>
+      </div>
+
+      <div class="toolgroup">
+        <label for="mode">模式</label>
+        <select id="mode">
+          <option value="guide" selected>重点阅读标注</option>
+          <option value="glossary">术语辅助预译</option>
+          <option value="ai">AI 专业翻译</option>
+        </select>
+        <label for="endpoint">接口</label>
+        <input class="api-url" id="endpoint" type="text" value="https://api.openai.com/v1/chat/completions" />
+        <label for="apiKey">Key</label>
+        <input class="api-key" id="apiKey" type="password" placeholder="AI 模式需要" />
+        <input class="model" id="model" type="text" value="gpt-4o-mini" aria-label="模型" />
+        <button class="primary" id="translateBtn" type="button">处理</button>
+      </div>
+    </section>
+
+    <div class="status" id="status">默认用“重点阅读标注”：红色看风险边界，黄色看设计参数，绿色按步骤验证；需要整句中文翻译时再切到 AI 专业翻译。</div>
+
+    <main>
+      <section class="pane">
+        <div class="pane-title">
+          <span>英文原文</span>
+          <span class="chips">
+            <span class="source-switch" id="sourceSwitch">
+              <button id="pdfViewBtn" type="button">PDF 原件</button>
+              <button id="textViewBtn" type="button">提取文字</button>
+            </span>
+            <span class="chip" id="sourceCount">0 字符</span>
+            <span class="chip">支持 PDF/TXT</span>
+          </span>
+        </div>
+        <div class="source-body">
+          <iframe class="pdf-viewer" id="pdfViewer" title="PDF 原始数据手册预览"></iframe>
+          <textarea id="source" spellcheck="false" placeholder="Paste the English datasheet text here..."></textarea>
+        </div>
+      </section>
+
+      <section class="pane">
+        <div class="pane-title">
+          <span>PDF 重点标注 / 中文译文</span>
+          <span class="chips">
+            <span class="chip" id="termCount">0 个术语</span>
+            <span class="chip">左右对照</span>
+          </span>
+        </div>
+        <div class="output" id="output">
+          <p class="hint">右侧会显示数据手册阅读重点。红色是不能踩的边界，黄色是设计必须核对的参数，绿色是推荐的阅读和验证步骤。</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const source = document.getElementById("source");
+    const output = document.getElementById("output");
+    const statusLine = document.getElementById("status");
+    const sourceCount = document.getElementById("sourceCount");
+    const termCount = document.getElementById("termCount");
+    const translateBtn = document.getElementById("translateBtn");
+    const mode = document.getElementById("mode");
+    const endpoint = document.getElementById("endpoint");
+    const apiKey = document.getElementById("apiKey");
+    const model = document.getElementById("model");
+    const pdfViewer = document.getElementById("pdfViewer");
+    const sourceSwitch = document.getElementById("sourceSwitch");
+    const pdfViewBtn = document.getElementById("pdfViewBtn");
+    const textViewBtn = document.getElementById("textViewBtn");
+    let currentPdfUrl = "";
+    let currentPdfFile = null;
+
+    const glossary = new Map([
+      ["absolute maximum ratings", "绝对最大额定值"],
+      ["active high", "高电平有效"],
+      ["active low", "低电平有效"],
+      ["analog ground", "模拟地"],
+      ["application circuit", "应用电路"],
+      ["bandwidth", "带宽"],
+      ["bias current", "偏置电流"],
+      ["bootstrap capacitor", "自举电容"],
+      ["breakdown voltage", "击穿电压"],
+      ["bypass capacitor", "旁路电容"],
+      ["ceramic capacitor", "陶瓷电容"],
+      ["common mode", "共模"],
+      ["conversion time", "转换时间"],
+      ["current limit", "限流"],
+      ["data hold time", "数据保持时间"],
+      ["decoupling capacitor", "去耦电容"],
+      ["digital ground", "数字地"],
+      ["dropout voltage", "压差电压"],
+      ["duty cycle", "占空比"],
+      ["enable pin", "使能引脚"],
+      ["equivalent series resistance", "等效串联电阻"],
+      ["fall time", "下降时间"],
+      ["feedback resistor", "反馈电阻"],
+      ["forward voltage", "正向压降"],
+      ["gain bandwidth product", "增益带宽积"],
+      ["ground plane", "接地平面"],
+      ["hold time", "保持时间"],
+      ["input bias current", "输入偏置电流"],
+      ["input capacitance", "输入电容"],
+      ["input common mode range", "输入共模范围"],
+      ["input offset voltage", "输入失调电压"],
+      ["input voltage range", "输入电压范围"],
+      ["inrush current", "浪涌电流"],
+      ["junction temperature", "结温"],
+      ["leakage current", "漏电流"],
+      ["line regulation", "线性调整率"],
+      ["load regulation", "负载调整率"],
+      ["logic high", "逻辑高电平"],
+      ["logic low", "逻辑低电平"],
+      ["low dropout regulator", "低压差线性稳压器"],
+      ["maximum rating", "最大额定值"],
+      ["minimum pulse width", "最小脉冲宽度"],
+      ["noise density", "噪声密度"],
+      ["open drain", "开漏"],
+      ["open collector", "开集电极"],
+      ["operating temperature", "工作温度"],
+      ["output capacitor", "输出电容"],
+      ["output impedance", "输出阻抗"],
+      ["output ripple", "输出纹波"],
+      ["package outline", "封装外形"],
+      ["pad layout", "焊盘布局"],
+      ["peak current", "峰值电流"],
+      ["pin configuration", "引脚配置"],
+      ["pin description", "引脚说明"],
+      ["power dissipation", "功耗"],
+      ["power good", "电源良好指示"],
+      ["power supply rejection ratio", "电源抑制比"],
+      ["pull-up resistor", "上拉电阻"],
+      ["pull-down resistor", "下拉电阻"],
+      ["quiescent current", "静态电流"],
+      ["recommended operating conditions", "推荐工作条件"],
+      ["reference voltage", "基准电压"],
+      ["register map", "寄存器映射"],
+      ["reset threshold", "复位阈值"],
+      ["reverse current", "反向电流"],
+      ["rise time", "上升时间"],
+      ["sampling rate", "采样率"],
+      ["saturation voltage", "饱和压降"],
+      ["setup time", "建立时间"],
+      ["short-circuit protection", "短路保护"],
+      ["slew rate", "压摆率"],
+      ["solder mask", "阻焊层"],
+      ["start-up time", "启动时间"],
+      ["supply current", "电源电流"],
+      ["supply voltage", "电源电压"],
+      ["switching frequency", "开关频率"],
+      ["thermal pad", "散热焊盘"],
+      ["thermal resistance", "热阻"],
+      ["threshold voltage", "阈值电压"],
+      ["timing diagram", "时序图"],
+      ["typical application", "典型应用"],
+      ["undervoltage lockout", "欠压锁定"],
+      ["voltage reference", "电压基准"]
+    ]);
+
+    const sampleText = `3.3 V Low-Dropout Linear Regulator
+
+The device is designed for portable applications requiring low quiescent current and low dropout voltage. Place a 1 uF ceramic bypass capacitor close to the input pin and connect the thermal pad to the ground plane.
+
+Recommended operating conditions specify the supply voltage range, junction temperature, and maximum output current. The enable pin is active high. When EN is logic low, the regulator enters shutdown mode and the supply current is reduced to less than 1 uA.
+
+The timing diagram shows setup time, hold time, rise time, and fall time for the control interface. Do not exceed the absolute maximum ratings.`;
+
+    function setStatus(message, isError = false) {
+      statusLine.textContent = message;
+      statusLine.classList.toggle("error", isError);
+    }
+
+    function escapeHtml(text) {
+      return text.replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "\"": "&quot;",
+        "'": "&#39;"
+      }[char]));
+    }
+
+    function findTerms(text) {
+      const lower = text.toLowerCase();
+      const found = [];
+      for (const [term, zh] of glossary.entries()) {
+        if (lower.includes(term)) found.push([term, zh]);
+      }
+      return found;
+    }
+
+    function markTerms(text) {
+      let html = escapeHtml(text);
+      const terms = [...glossary.keys()].sort((a, b) => b.length - a.length);
+      for (const term of terms) {
+        const zh = glossary.get(term);
+        const pattern = new RegExp(`\\b${term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "gi");
+        html = html.replace(pattern, (match) => `<span class="term" title="${escapeHtml(zh)}">${match} / ${escapeHtml(zh)}</span>`);
+      }
+      return html;
+    }
+
+    function splitSegments(text) {
+      return text
+        .split(/\n\s*\n/g)
+        .map((part) => part.trim())
+        .filter(Boolean);
+    }
+
+    function setSourceView(view) {
+      const showPdf = view === "pdf" && Boolean(currentPdfUrl);
+      pdfViewer.classList.toggle("active", showPdf);
+      source.classList.toggle("hidden-source", showPdf);
+      pdfViewBtn.classList.toggle("active", showPdf);
+      textViewBtn.classList.toggle("active", !showPdf);
+    }
+
+    function clearPdfPreview() {
+      if (currentPdfUrl) URL.revokeObjectURL(currentPdfUrl);
+      currentPdfUrl = "";
+      currentPdfFile = null;
+      pdfViewer.removeAttribute("src");
+      sourceSwitch.classList.remove("visible");
+      setSourceView("text");
+    }
+
+    const guideRules = [
+      {
+        color: "red",
+        title: "风险边界：先确认这些不能超过",
+        summary: "这些内容通常决定器件会不会损坏，不能当作正常工作条件使用。",
+        terms: [
+          "absolute maximum ratings",
+          "maximum rating",
+          "do not exceed",
+          "exposure",
+          "stress",
+          "damage",
+          "not implied",
+          "not guaranteed",
+          "electrostatic discharge",
+          "esd",
+          "thermal shutdown",
+          "junction temperature",
+          "storage temperature"
+        ],
+        fallback: [
+          "先找 Absolute Maximum Ratings，它只说明器件承受极限，不代表可以长期工作。",
+          "把电源、电压、电流、结温、ESD 的最大值抄到设计检查表。",
+          "任何超过推荐工作条件的设计都要降额或重新选型。"
+        ]
+      },
+      {
+        color: "yellow",
+        title: "设计参数：再核对电路必须满足的值",
+        summary: "这些内容用于真正设计原理图、选电容电阻、算功耗和判断接口兼容。",
+        terms: [
+          "recommended operating conditions",
+          "electrical characteristics",
+          "supply voltage",
+          "supply current",
+          "quiescent current",
+          "input voltage",
+          "output current",
+          "dropout voltage",
+          "threshold voltage",
+          "reference voltage",
+          "thermal resistance",
+          "power dissipation",
+          "timing",
+          "setup time",
+          "hold time",
+          "rise time",
+          "fall time",
+          "switching frequency",
+          "input capacitance",
+          "output capacitor"
+        ],
+        fallback: [
+          "看 Recommended Operating Conditions 和 Electrical Characteristics，不要只看 typical。",
+          "同时看 min/typ/max 和测试条件，例如温度、电源电压、负载电流。",
+          "把供电范围、电流、温度、时序、电容 ESR、功耗和热阻逐项带入你的板级条件。"
+        ]
+      },
+      {
+        color: "green",
+        title: "验证步骤：最后按 1-2-3 落到原理图和测试",
+        summary: "这些内容帮助你把数据手册变成可检查的电路、PCB 和测试项。",
+        terms: [
+          "feature",
+          "block diagram",
+          "pin configuration",
+          "pin description",
+          "typical application",
+          "application circuit",
+          "layout",
+          "ground plane",
+          "thermal pad",
+          "register map",
+          "timing diagram",
+          "package outline",
+          "pad layout"
+        ],
+        fallback: [
+          "1 看 Features/Block Diagram，确认芯片功能和系统位置。",
+          "2 看 Pin Description/Typical Application/Layout，照着检查原理图和 PCB。",
+          "3 看 Timing/Register/Package，把软件配置、测试波形、封装焊盘都列成验证清单。"
+        ]
+      }
+    ];
+
+    const annotationGlossary = new Map([
+      ["absolute maximum ratings", "绝对最大额定值：超过可能损坏，不能当工作条件"],
+      ["maximum rating", "最大额定值：器件极限边界"],
+      ["do not exceed", "不得超过：设计必须留余量"],
+      ["stress", "应力条件：长期使用不应靠近极限"],
+      ["damage", "损坏风险：需要降额设计"],
+      ["not guaranteed", "不保证工作：不能作为量产条件"],
+      ["electrostatic discharge", "ESD 静电等级：生产和接口防护要检查"],
+      ["esd", "ESD 静电防护：注意人体模型/接触放电"],
+      ["thermal shutdown", "热关断：过温保护点"],
+      ["junction temperature", "结温：芯片内部温度范围"],
+      ["storage temperature", "储存温度：非工作保存范围"],
+      ["recommended operating conditions", "推荐工作条件：正常设计必须满足"],
+      ["electrical characteristics", "电气特性：看 min/typ/max 和测试条件"],
+      ["supply voltage", "电源电压：确认供电范围"],
+      ["supply current", "电源电流：估算功耗和待机耗电"],
+      ["quiescent current", "静态电流：待机/轻载耗电关键"],
+      ["input voltage", "输入电压：接口或供电输入范围"],
+      ["output current", "输出电流：负载能力"],
+      ["dropout voltage", "压差电压：LDO 输入必须高出输出多少"],
+      ["threshold voltage", "阈值电压：逻辑/检测翻转点"],
+      ["reference voltage", "基准电压：反馈或 ADC 基准"],
+      ["thermal resistance", "热阻：用来算结温和散热"],
+      ["power dissipation", "功耗：检查封装散热余量"],
+      ["timing", "时序：接口读写必须满足"],
+      ["setup time", "建立时间：信号需提前稳定"],
+      ["hold time", "保持时间：采样后需继续保持"],
+      ["rise time", "上升时间：边沿速度限制"],
+      ["fall time", "下降时间：边沿速度限制"],
+      ["switching frequency", "开关频率：影响电感、电容和 EMI"],
+      ["input capacitance", "输入电容：影响接口驱动和滤波"],
+      ["output capacitor", "输出电容：稳定性和纹波关键"],
+      ["feature", "特性列表：先判断芯片是否适合"],
+      ["block diagram", "功能框图：理解内部模块"],
+      ["pin configuration", "引脚配置：核对封装脚位"],
+      ["pin description", "引脚说明：每个脚怎么接"],
+      ["typical application", "典型应用：原理图参考起点"],
+      ["application circuit", "应用电路：照着检查外围器件"],
+      ["layout", "布局建议：PCB 走线和地很关键"],
+      ["ground plane", "接地平面：影响噪声和散热"],
+      ["thermal pad", "散热焊盘：必须按建议接地/铺铜"],
+      ["register map", "寄存器表：软件配置入口"],
+      ["timing diagram", "时序图：按波形验证接口"],
+      ["package outline", "封装外形：画封装和机械检查"],
+      ["pad layout", "焊盘布局：PCB footprint 检查"]
+    ]);
+
+    function sentenceList(text) {
+      return text
+        .replace(/\s+/g, " ")
+        .split(/(?<=[.!?])\s+|\n+/)
+        .map((part) => part.trim())
+        .filter(Boolean);
+    }
+
+    function findGuideMatches(text, rule) {
+      const sentences = sentenceList(text);
+      const matches = [];
+      const usedTerms = new Set();
+      const usedSentences = new Set();
+
+      for (const sentence of sentences) {
+        const lower = sentence.toLowerCase();
+        const hit = rule.terms.find((term) => lower.includes(term));
+        if (hit && !usedTerms.has(hit) && !usedSentences.has(sentence)) {
+          usedTerms.add(hit);
+          usedSentences.add(sentence);
+          matches.push({ hit, sentence });
+        }
+        if (matches.length >= 5) break;
+      }
+
+      return matches;
+    }
+
+    function guideCard(rule, index, text) {
+      const matches = findGuideMatches(text, rule);
+      const items = matches.length
+        ? matches.map(({ hit }) => {
+          const zh = glossary.get(hit) || hit;
+          return `${hit}${zh !== hit ? `：${zh}` : ""}`;
+        })
+        : rule.fallback;
+      const snippets = matches
+        .slice(0, 3)
+        .map(({ sentence }) => `<div class="snippet">${markTerms(sentence)}</div>`)
+        .join("");
+
+      return `
+        <section class="guide-card ${rule.color}">
+          <div class="guide-head"><span class="badge">${index}</span><span>${rule.title}</span></div>
+          <div>${escapeHtml(rule.summary)}</div>
+          <ol class="guide-list">
+            ${items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
+          </ol>
+          ${snippets}
+        </section>
+      `;
+    }
+
+    function buildReadGuide(text) {
+      if (!text.trim()) {
+        output.innerHTML = `<p class="hint">请先粘贴或导入英文数据手册文本。</p>`;
+        return;
+      }
+
+      output.innerHTML = `
+        <div class="guide">
+          ${guideRules.map((rule, index) => guideCard(rule, index + 1, text)).join("")}
+        </div>
+      `;
+      termCount.textContent = `${findTerms(text).length} 个术语`;
+      setStatus("已生成重点阅读标注：红 1 看风险边界，黄 2 看设计参数，绿 3 看验证步骤。");
+    }
+
+    function matchGuideRule(line) {
+      const lower = line.toLowerCase();
+      for (let index = 0; index < guideRules.length; index += 1) {
+        const rule = guideRules[index];
+        const hit = rule.terms.find((term) => lower.includes(term));
+        if (hit) return { rule, index, hit };
+      }
+      return null;
+    }
+
+    function explainHit(hit, lineText) {
+      const exact = annotationGlossary.get(hit);
+      if (exact) return exact;
+
+      const foundTerm = findTerms(lineText)[0];
+      if (foundTerm) return `${foundTerm[0]}：${foundTerm[1]}`;
+
+      return `${hit}：需要重点核对`;
+    }
+
+    function shortAnnotation(text) {
+      const cleaned = text.replace(/^[^：:]+[：:]\s*/, "");
+      return cleaned.length > 18 ? `${cleaned.slice(0, 18)}...` : cleaned;
+    }
+
+    function collectPdfLineMarkers(items, viewport) {
+      const lines = new Map();
+
+      for (const item of items) {
+        const tx = window.pdfjsLib.Util.transform(viewport.transform, item.transform);
+        const y = Math.round(tx[5] / 7) * 7;
+        const key = String(y);
+        const existing = lines.get(key) || { text: "", x: tx[4], y: tx[5] };
+        existing.text += ` ${item.str}`;
+        existing.x = Math.min(existing.x, tx[4]);
+        existing.y = tx[5];
+        lines.set(key, existing);
+      }
+
+      const seenByRule = new Set();
+      const markers = [];
+      for (const line of [...lines.values()].sort((a, b) => a.y - b.y)) {
+        const match = matchGuideRule(line.text);
+        if (!match) continue;
+
+        const uniqueKey = `${match.index}-${match.hit}`;
+        if (seenByRule.has(uniqueKey)) continue;
+        seenByRule.add(uniqueKey);
+
+        markers.push({
+          number: match.index + 1,
+          color: match.rule.color,
+          hit: match.hit,
+          title: `${match.rule.title}｜${explainHit(match.hit, line.text)}`,
+          label: shortAnnotation(explainHit(match.hit, line.text)),
+          x: Math.max(18, line.x - 12),
+          y: Math.max(18, line.y - 8)
+        });
+
+        if (markers.length >= 10) break;
+      }
+
+      return markers;
+    }
+
+    function createLegend() {
+      return `
+        <div class="legend">
+          <span class="legend-item"><span class="badge" style="background:#d92d20">1</span>风险边界</span>
+          <span class="legend-item"><span class="badge" style="background:#c58b00">2</span>设计参数</span>
+          <span class="legend-item"><span class="badge" style="background:#16845b">3</span>验证步骤</span>
+        </div>
+      `;
+    }
+
+    async function renderAnnotatedPdfGuide(file) {
+      if (!file) {
+        buildReadGuide(source.value);
+        return;
+      }
+
+      const pdfjs = await loadPdfJs();
+      const buffer = await file.arrayBuffer();
+      const pdf = await pdfjs.getDocument({ data: buffer }).promise;
+      output.innerHTML = `<div class="pdf-annotated">${createLegend()}<div class="marker-note">正在渲染 PDF 标注...</div></div>`;
+      const wrapper = output.querySelector(".pdf-annotated");
+      const note = output.querySelector(".marker-note");
+      let totalMarkers = 0;
+      const annotationNotes = [];
+
+      for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
+        setStatus(`正在生成右侧 PDF 重点标注：第 ${pageNumber} / ${pdf.numPages} 页...`);
+        const page = await pdf.getPage(pageNumber);
+        const viewport = page.getViewport({ scale: 1.2 });
+        const pageBox = document.createElement("div");
+        pageBox.className = "pdf-page";
+        pageBox.style.width = `${viewport.width}px`;
+        pageBox.style.height = `${viewport.height}px`;
+
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.floor(viewport.width);
+        canvas.height = Math.floor(viewport.height);
+        pageBox.appendChild(canvas);
+        wrapper.appendChild(pageBox);
+
+        const context = canvas.getContext("2d");
+        await page.render({ canvasContext: context, viewport }).promise;
+
+        const content = await page.getTextContent();
+        const markers = collectPdfLineMarkers(content.items, viewport);
+        totalMarkers += markers.length;
+
+        for (const marker of markers) {
+          const badge = document.createElement("span");
+          badge.className = `pdf-marker ${marker.color}`;
+          badge.title = marker.title;
+          badge.style.left = `${marker.x}px`;
+          badge.style.top = `${marker.y}px`;
+          badge.innerHTML = `<span class="marker-num">${marker.number}</span><span class="marker-text">${escapeHtml(marker.label)}</span>`;
+          pageBox.appendChild(badge);
+          annotationNotes.push(marker);
+        }
+      }
+
+      note.textContent = totalMarkers
+        ? `已在 PDF 原文上标出 ${totalMarkers} 个重点。标记旁边是中文含义，鼠标停上去可看完整说明。`
+        : "这个 PDF 没匹配到可标注关键词；可以切到“提取文字”确认 PDF 是否能提取文字。";
+      if (annotationNotes.length) {
+        const list = document.createElement("div");
+        list.className = "annotation-list";
+        list.innerHTML = annotationNotes.slice(0, 30).map((marker) => `
+          <div class="annotation-item">
+            <strong>${marker.number}. ${escapeHtml(marker.hit)}</strong>${escapeHtml(marker.title.replace(/^.*?｜/, ""))}
+          </div>
+        `).join("");
+        wrapper.appendChild(list);
+      }
+      termCount.textContent = `${findTerms(source.value).length} 个术语`;
+      setStatus("右侧 PDF 重点标注完成：1 红风险，2 黄参数，3 绿步骤。");
+    }
+
+    async function loadPdfJs() {
+      if (window.pdfjsLib) return window.pdfjsLib;
+
+      const urls = [
+        "https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.mjs",
+        "https://unpkg.com/pdfjs-dist@4.10.38/build/pdf.mjs"
+      ];
+
+      let lastError;
+      for (const url of urls) {
+        try {
+          const pdfjs = await import(url);
+          pdfjs.GlobalWorkerOptions.workerSrc = url.replace("/pdf.mjs", "/pdf.worker.mjs");
+          window.pdfjsLib = pdfjs;
+          return pdfjs;
+        } catch (error) {
+          lastError = error;
+        }
+      }
+      throw lastError || new Error("无法加载 PDF 解析器。");
+    }
+
+    function normalizePdfText(items) {
+      let text = "";
+      let lastY = null;
+
+      for (const item of items) {
+        const y = Math.round(item.transform[5]);
+        if (lastY !== null) {
+          if (Math.abs(y - lastY) > 8) {
+            text += "\n";
+          } else {
+            text += " ";
+          }
+        }
+        text += item.str;
+        lastY = y;
+      }
+
+      return text
+        .replace(/[ \t]+\n/g, "\n")
+        .replace(/\n{3,}/g, "\n\n")
+        .trim();
+    }
+
+    async function extractPdfText(file) {
+      const pdfjs = await loadPdfJs();
+      const buffer = await file.arrayBuffer();
+      const pdf = await pdfjs.getDocument({ data: buffer }).promise;
+      const pages = [];
+
+      for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
+        setStatus(`正在读取 PDF：第 ${pageNumber} / ${pdf.numPages} 页...`);
+        const page = await pdf.getPage(pageNumber);
+        const content = await page.getTextContent();
+        pages.push(normalizePdfText(content.items));
+      }
+
+      return pages.filter(Boolean).join("\n\n");
+    }
+
+    function glossaryTranslate(text) {
+      const parts = splitSegments(text);
+      if (!parts.length) {
+        output.innerHTML = `<p class="hint">请先粘贴或导入英文数据手册文本。</p>`;
+        return;
+      }
+      output.innerHTML = parts.map((part) => {
+        const terms = findTerms(part);
+        const termLine = terms.length
+          ? `\n\n术语提示：${terms.map(([en, zh]) => `${en} = ${zh}`).join("；")}`
+          : "";
+        return `<div class="segment">${markTerms(part)}${escapeHtml(termLine)}</div>`;
+      }).join("");
+      termCount.textContent = `${findTerms(text).length} 个术语`;
+      setStatus("已完成术语辅助预译。这个模式用于确认专业词义；完整自然翻译请使用 AI 专业翻译模式。");
+    }
+
+    function getPrompt(text) {
+      const terms = findTerms(text).map(([en, zh]) => `${en}: ${zh}`).join("\n");
+      return [
+        "你是电子硬件、芯片和半导体数据手册的专业中英翻译。",
+        "请把英文数据手册内容翻译成准确、自然、工程师可直接理解的简体中文。",
+        "要求：保留型号、引脚名、寄存器名、位名、单位、公式、表格符号和数值；不要扩写不存在的信息；active-low 译为低电平有效；shutdown、enable、reset、thermal、timing 等按硬件语境处理。",
+        terms ? `优先采用以下术语：\n${terms}` : "如遇专业术语，请按芯片数据手册常用中文译法处理。",
+        "只输出译文，不要解释。",
+        "\n英文原文：\n",
+        text
+      ].join("\n");
+    }
+
+    async function aiTranslate(text) {
+      const key = apiKey.value.trim();
+      if (!key) {
+        setStatus("AI 专业翻译模式需要填写接口 Key。也可以先切到术语辅助预译模式离线使用。", true);
+        return;
+      }
+
+      translateBtn.disabled = true;
+      output.innerHTML = `<p class="hint">正在请求 AI 翻译，请稍等...</p>`;
+      setStatus("正在按电子硬件数据手册语境翻译。");
+
+      try {
+        const response = await fetch(endpoint.value.trim(), {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${key}`
+          },
+          body: JSON.stringify({
+            model: model.value.trim() || "gpt-4o-mini",
+            messages: [
+              { role: "system", content: "You translate electronics and semiconductor datasheets into professional Simplified Chinese." },
+              { role: "user", content: getPrompt(text) }
+            ],
+            temperature: 0.2
+          })
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(errorText || `HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        const translated = data?.choices?.[0]?.message?.content || data?.output_text || "";
+        if (!translated.trim()) throw new Error("接口返回为空，可能不是 Chat Completions 兼容格式。");
+
+        output.innerHTML = splitSegments(translated).map((part) => `<div class="segment">${escapeHtml(part)}</div>`).join("");
+        termCount.textContent = `${findTerms(text).length} 个术语`;
+        setStatus("AI 专业翻译完成。左侧保留原文，右侧为中文译文。");
+      } catch (error) {
+        output.innerHTML = `<p class="hint">翻译失败。请检查接口地址、Key、模型名，或浏览器是否允许该接口跨域请求。</p>`;
+        setStatus(`翻译失败：${error.message.slice(0, 220)}`, true);
+      } finally {
+        translateBtn.disabled = false;
+      }
+    }
+
+    function updateCounts() {
+      const text = source.value;
+      sourceCount.textContent = `${text.length} 字符`;
+      termCount.textContent = `${findTerms(text).length} 个术语`;
+    }
+
+    document.getElementById("sampleBtn").addEventListener("click", () => {
+      clearPdfPreview();
+      source.value = sampleText;
+      updateCounts();
+      buildReadGuide(source.value);
+    });
+
+    document.getElementById("clearBtn").addEventListener("click", () => {
+      clearPdfPreview();
+      source.value = "";
+      output.innerHTML = `<p class="hint">译文会显示在这里。</p>`;
+      updateCounts();
+      setStatus("已清空。");
+    });
+
+    document.getElementById("copyBtn").addEventListener("click", async () => {
+      const text = output.innerText.trim();
+      if (!text) return setStatus("没有可复制的译文。", true);
+      await navigator.clipboard.writeText(text);
+      setStatus("译文已复制到剪贴板。");
+    });
+
+    document.getElementById("fileInput").addEventListener("change", async (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      try {
+        setStatus(`正在导入 ${file.name}...`);
+        const isPdf = file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
+        clearPdfPreview();
+        if (isPdf) {
+          currentPdfFile = file;
+          currentPdfUrl = URL.createObjectURL(file);
+          pdfViewer.src = currentPdfUrl;
+          sourceSwitch.classList.add("visible");
+          setSourceView("pdf");
+        }
+        const text = isPdf ? await extractPdfText(file) : await file.text();
+
+        if (!text.trim()) {
+          throw new Error("没有提取到文字。这个 PDF 可能是扫描图片版，需要先 OCR。");
+        }
+
+        source.value = text;
+        updateCounts();
+        setStatus(isPdf
+          ? `已导入 ${file.name}。左侧显示 PDF 原件，已提取 ${text.length} 个字符用于右侧分析。`
+          : `已导入 ${file.name}，提取到 ${text.length} 个字符。`);
+        if (isPdf && mode.value === "guide") {
+          await renderAnnotatedPdfGuide(file);
+        }
+      } catch (error) {
+        setStatus(`PDF 导入失败：${error.message} 如果页面离线使用，请联网加载 PDF 解析器；扫描版 PDF 需要 OCR。`, true);
+      }
+    });
+
+    pdfViewBtn.addEventListener("click", () => setSourceView("pdf"));
+    textViewBtn.addEventListener("click", () => setSourceView("text"));
+
+    translateBtn.addEventListener("click", async () => {
+      const text = source.value.trim();
+      if (!text) return setStatus("请先粘贴英文数据手册文本。", true);
+      if (mode.value === "guide") {
+        if (currentPdfFile) {
+          await renderAnnotatedPdfGuide(currentPdfFile);
+        } else {
+          buildReadGuide(text);
+        }
+      } else if (mode.value === "ai") {
+        aiTranslate(text);
+      } else {
+        glossaryTranslate(text);
+      }
+    });
+
+    source.addEventListener("input", updateCounts);
+    updateCounts();
+  </script>
+</body>
+</html>
