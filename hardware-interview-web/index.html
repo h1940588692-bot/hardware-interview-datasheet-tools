@@ -44,6 +44,15 @@
           <div class="chip-list compact" id="levelFilters"></div>
         </div>
 
+        <div class="control-group">
+          <span class="label">求职专项</span>
+          <div class="chip-list" id="trackFilters"></div>
+        </div>
+        <div class="control-group">
+          <span class="label">学习记录</span>
+          <div class="chip-list" id="studyFilters"></div>
+        </div>
+
         <div class="source-card">
           <span>题源</span>
           <a href="https://github.com/mikinty/Hardware-Engineer-Interview-Questions" target="_blank" rel="noreferrer">Hardware-Engineer-Interview-Questions</a>
@@ -86,6 +95,19 @@
           </article>
         </section>
 
+        <section class="learning-panel" aria-label="学习进度">
+          <strong id="learningSummary"></strong>
+          <label for="masteryProgress">全题库掌握进度（自评）</label>
+          <progress id="masteryProgress" value="0" max="277"></progress>
+          <div class="study-actions">
+            <button type="button" data-mode="practice" aria-pressed="true">逐题训练</button>
+            <button type="button" data-mode="browse" aria-pressed="false">题库浏览</button>
+            <button type="button" id="exportProgress">导出学习记录</button>
+          </div>
+          <p id="storageStatus" role="status"></p>
+          <small>思路与自评保存在当前浏览器；建议定期导出备份。查看答案本身不代表掌握。</small>
+        </section>
+
         <section class="toolbar" aria-label="排序工具">
           <div>
             <strong id="resultTitle">全部题目</strong>
@@ -98,6 +120,11 @@
           </select>
         </section>
 
+        <nav class="practice-nav" id="practiceNav" aria-label="逐题切换">
+          <button type="button" id="previousQuestion">上一题</button>
+          <span id="practicePosition" role="status"></span>
+          <button type="button" id="nextQuestion">下一题</button>
+        </nav>
         <section id="questionGrid" class="question-grid" aria-live="polite"></section>
       </main>
     </div>
@@ -109,11 +136,30 @@
           <span class="level"></span>
         </div>
         <h2></h2>
-        <p class="answer"></p>
+        <p class="mastery-status"></p>
+        <label class="draft-label">先写下你的思路（可选）
+          <textarea class="draft" rows="4" maxlength="4000" placeholder="先说原理，再列测试步骤、判断依据和排查顺序……"></textarea>
+        </label>
+        <button class="reveal-answer" type="button" aria-expanded="false">想好了，查看答案</button>
+        <div class="answer-content" hidden>
+          <h3>参考答案 / 提示</h3>
+          <p class="answer"></p>
+          <div class="coaching"></div>
+          <fieldset class="rating">
+            <legend>对照答案，自评掌握程度</legend>
+            <button type="button" data-rating="weak">不会 · 加入错题本</button>
+            <button type="button" data-rating="learning">不熟 · 继续复习</button>
+            <button type="button" data-rating="mastered">已掌握</button>
+          </fieldset>
+        </div>
+        <button class="wrong-toggle" type="button">加入错题本</button>
         <div class="tags"></div>
       </article>
     </template>
 
+    <script src="./coaching.js"></script>
     <script src="./app.js"></script>
+    <script src="./learning.js"></script>
   </body>
 </html>
+
