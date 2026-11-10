@@ -1,0 +1,6 @@
+{
+  "name": "hardware-interview-training",
+  "private": true,
+  "scripts": { "test": "node tests/learning.test.cjs" },
+  "devDependencies": { "jsdom": "26.1.0" }
+}

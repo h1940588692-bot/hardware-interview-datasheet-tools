@@ -467,3 +467,67 @@ label,
     grid-template-columns: 1fr;
   }
 }
+
+/* Learning controls retain the original palette and card layout. */
+[hidden] { display: none !important; }
+.learning-panel {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px;
+  margin-bottom: 18px;
+  background: var(--panel);
+}
+.learning-panel label { margin: 12px 0 6px; }
+.learning-panel progress { width: 100%; accent-color: var(--green); }
+.learning-panel small, #storageStatus { color: #536175; line-height: 1.6; }
+.study-actions, .practice-nav { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.study-actions { margin-top: 14px; }
+.practice-nav { justify-content: space-between; margin-bottom: 16px; }
+.learning-panel button, .practice-nav button, .question-card button {
+  min-height: 38px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #f8fbfd;
+  color: #344054;
+  cursor: pointer;
+}
+button[aria-pressed="true"], .question-card .reveal-answer {
+  color: white;
+  background: var(--green);
+}
+button:disabled { opacity: .5; cursor: default; }
+button:focus-visible, textarea:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 3px;
+}
+.question-grid.is-practice { grid-template-columns: minmax(0, 1fr); }
+.mastery-status { color: var(--green); font-weight: 700; }
+.draft-label { font-size: 14px; }
+.draft {
+  width: 100%;
+  display: block;
+  resize: vertical;
+  min-height: 110px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 12px;
+  margin-top: 8px;
+  font: inherit;
+  line-height: 1.6;
+}
+.answer-content { margin-top: 16px; overflow-wrap: anywhere; }
+.answer-content h3 { font-size: 15px; margin: 12px 0 8px; }
+.coaching { line-height: 1.8; color: #3d4a5c; }
+.coaching ol { padding-left: 24px; }
+.coaching a { color: var(--blue); }
+.rating { border: 1px solid var(--line); border-radius: 7px; padding: 12px; margin: 16px 0 0; }
+.rating button { margin: 4px; }
+.question-card .wrong-toggle { align-self: flex-start; margin: 14px 0; }
+.question-card .tags { margin-top: auto; }
+@media (max-width: 620px) {
+  .main, .sidebar { max-width: 100%; }
+  .study-actions button { flex: 1 1 130px; }
+  .rating button { display: block; width: 100%; margin: 6px 0; }
+}
+
